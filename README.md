@@ -117,55 +117,66 @@ sudo mv composer.phar /usr/local/bin/composer
 
 ### 3.2 Copiar el proyecto
 
-Esta guía asume que el proyecto se aloja como una subcarpeta dentro de la raíz web por defecto de Apache (`/var/www/html`), quedando accesible en `http://<ip-o-dominio-del-servidor>/carreras-umg/`:
-
 ```bash
-sudo mkdir -p /var/www/html/carreras-umg
-sudo cp -r /ruta/al/proyecto/. /var/www/html/carreras-umg/
-cd /var/www/html/carreras-umg
+sudo mkdir -p /var/www/carreras-umg
+sudo cp -r /ruta/al/proyecto/. /var/www/carreras-umg/
+cd /var/www/carreras-umg
 sudo composer install --no-interaction --prefer-dist
 sudo cp env .env
 ```
 
-> CodeIgniter incluye un `.htaccess` en la raíz del proyecto que redirige internamente a `public/`, así que **no** hace falta apuntar `DocumentRoot` a la subcarpeta `public`: basta con que el `.htaccess` funcione (ver 3.3).
+> La ruta `/var/www/carreras-umg` es solo un ejemplo; puede usar cualquier carpeta (incluida una dentro de `/var/www/html`, como `/var/www/html/carreras-umg`). Lo importante es que el `DocumentRoot` del virtual host (siguiente paso) apunte a la subcarpeta `public/` **dentro** de esa carpeta, no a la carpeta del proyecto en sí.
 
 ### 3.3 Configurar Apache
 
-Para que ese `.htaccess` tenga efecto, habilite `AllowOverride All` sobre `/var/www/html`. Edite `/etc/apache2/apache2.conf` y ajuste el bloque `<Directory /var/www/>`:
+Cree `/etc/apache2/sites-available/carreras-umg.conf` (o edite `000-default.conf` si el proyecto será el único sitio del servidor):
 
 ```apache
-<Directory /var/www/>
-    Options Indexes FollowSymLinks
-    AllowOverride All
-    Require all granted
-</Directory>
+<VirtualHost *:80>
+    ServerName carreras-umg.local
+    DocumentRoot /var/www/carreras-umg/public
+
+    <Directory /var/www/carreras-umg/public>
+        AllowOverride All
+        Require all granted
+    </Directory>
+
+    ErrorLog ${APACHE_LOG_DIR}/carreras-umg-error.log
+    CustomLog ${APACHE_LOG_DIR}/carreras-umg-access.log combined
+</VirtualHost>
 ```
 
-Recargue Apache:
+> **Use guion, no guion bajo, en `ServerName`** (`carreras-umg.local`, no `carreras_umg.local`): los nombres de host no aceptan `_` según el estándar de DNS. Esto no aplica al nombre de la carpeta ni al de la base de datos, que sí admiten guion bajo.
+>
+> **No agregue ningún prefijo de subcarpeta a la URL.** Como `DocumentRoot` ya apunta directamente a `public/`, el proyecto vive en la **raíz** de este virtual host: se accede como `http://carreras-umg.local/` (o `http://<ip-del-servidor>/`), nunca como `http://carreras-umg.local/carreras-umg/`. Si visita una URL con ese prefijo de más, CodeIgniter no la reconocerá y mostrará `Can't find a route for...`.
+
+Active el sitio y recargue Apache:
 
 ```bash
+sudo a2dissite 000-default.conf
+sudo a2ensite carreras-umg.conf
 sudo systemctl reload apache2
 ```
 
-> **Alternativa:** si prefiere que el sitio responda en la raíz del dominio (sin `/carreras-umg/` en la URL), copie el proyecto directamente en `/var/www/html/` en vez de en una subcarpeta, o configure un virtual host dedicado con `DocumentRoot` apuntando a su carpeta `public/`. Si usa un nombre de host propio en ese virtual host, use guion y no guion bajo (`carreras-umg.ejemplo.com`, no `carreras_umg.ejemplo.com`): los estándares de DNS no aceptan `_` en nombres de host. Esto no aplica al nombre de la base de datos, que sí admite guion bajo.
+> Para probar en el mismo equipo, agregue `127.0.0.1 carreras-umg.local` a `/etc/hosts`. Si aún no tiene un dominio, puede entrar directamente por la IP del servidor en vez de `carreras-umg.local`; como es el único sitio del virtual host, Apache lo sirve igual aunque el `Host` de la petición no coincida con `ServerName`.
 
 ### 3.4 Permisos
 
 PHP-Apache debe poder escribir en `writable/` (caché, sesiones, logs y PDF subidos):
 
 ```bash
-sudo chown -R www-data:www-data /var/www/html/carreras-umg/writable
-sudo chmod -R 775 /var/www/html/carreras-umg/writable
+sudo chown -R www-data:www-data /var/www/carreras-umg/writable
+sudo chmod -R 775 /var/www/carreras-umg/writable
 ```
 
 ### 3.5 Configurar `.env`
 
-Edite `/var/www/html/carreras-umg/.env`:
+Edite `/var/www/carreras-umg/.env`:
 
 ```ini
 CI_ENVIRONMENT = production
 
-app.baseURL = 'http://203.0.113.10/carreras-umg/'
+app.baseURL = 'http://carreras-umg.local/'
 
 database.default.hostname = localhost
 database.default.database = carreras_umg
@@ -175,14 +186,14 @@ database.default.DBDriver = MySQLi
 database.default.port = 3306
 ```
 
-> Sustituya `203.0.113.10` por la IP pública o el dominio real del servidor (ese valor es solo un ejemplo, reservado para documentación). **`app.baseURL` debe ser únicamente la raíz del sitio**: no le agregue `index.php` ni la ruta de una página (por ejemplo `/index.php/login`). CodeIgniter usa ese valor como prefijo para generar todos los enlaces, los assets (CSS/JS) y las redirecciones de la aplicación; si le deja una ruta de página al final, esos enlaces quedan rotos.
+> Si todavía no tiene dominio, use la IP pública del servidor en vez de `carreras-umg.local`, por ejemplo `app.baseURL = 'http://203.0.113.10/'` (IP de ejemplo). **`app.baseURL` debe ser únicamente la raíz del sitio**: sin `/carreras-umg` ni ninguna otra subcarpeta al final (el `DocumentRoot` ya apunta a `public/`, así que no hace falta), y sin `index.php` ni la ruta de una página (por ejemplo `/index.php/login`). CodeIgniter usa ese valor como prefijo para generar todos los enlaces, los assets (CSS/JS) y las redirecciones de la aplicación; cualquier ruta de más al final deja esos enlaces rotos.
 >
-> El nombre de la base de datos sí puede llevar guion bajo (`carreras_umg`); la recomendación de usar guion es solo para nombres de host (dominios), no para la IP, la ruta de `baseURL` ni el nombre de la base de datos.
+> El nombre de la base de datos sí puede llevar guion bajo (`carreras_umg`); la recomendación de usar guion es solo para `ServerName`/nombres de host, no para la IP, la carpeta del proyecto ni la base de datos.
 
 Genere la clave de cifrado:
 
 ```bash
-cd /var/www/html/carreras-umg
+cd /var/www/carreras-umg
 sudo -u www-data php spark key:generate
 ```
 
@@ -207,7 +218,7 @@ Use la misma contraseña que puso en `.env`.
 ### 3.7 Migrar y crear el administrador
 
 ```bash
-cd /var/www/html/carreras-umg
+cd /var/www/carreras-umg
 sudo -u www-data php spark migrate
 sudo -u www-data php spark db:seed AdminInicialSeeder
 ```
@@ -227,7 +238,7 @@ Luego reinicie Apache: `sudo systemctl restart apache2`.
 
 ### 3.9 Abrir la aplicación
 
-Entre a **http://203.0.113.10/carreras-umg/** (sustituya por la IP o el dominio real del servidor) con el usuario `admin`.
+Entre a **http://carreras-umg.local/** (o la IP/dominio real del servidor, sin ningún prefijo de subcarpeta) con el usuario `admin`.
 
 ---
 
