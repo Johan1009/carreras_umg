@@ -117,60 +117,64 @@ sudo mv composer.phar /usr/local/bin/composer
 
 ### 3.2 Copiar el proyecto
 
+Esta guía asume que el proyecto se aloja directamente en `/var/www/html` (la raíz web por defecto de Apache):
+
 ```bash
-sudo mkdir -p /var/www/carreras_umg
-sudo cp -r /ruta/al/proyecto/. /var/www/carreras_umg/
-cd /var/www/carreras_umg
+sudo rm -f /var/www/html/index.html
+sudo cp -r /ruta/al/proyecto/. /var/www/html/
+cd /var/www/html
 sudo composer install --no-interaction --prefer-dist
 sudo cp env .env
 ```
 
+> Si prefiere alojarlo en otra carpeta (por ejemplo `/var/www/carreras-umg`), sustituya `/var/www/html` por esa ruta en todos los comandos de esta sección.
+
 ### 3.3 Configurar Apache
 
-Cree `/etc/apache2/sites-available/carreras_umg.conf`:
+Edite `/etc/apache2/sites-available/000-default.conf` (o cree un virtual host nuevo) y ajuste `DocumentRoot` y `ServerName`:
 
 ```apache
 <VirtualHost *:80>
-    ServerName carreras_umg.local
-    DocumentRoot /var/www/carreras_umg/public
+    ServerName carreras-umg.local
+    DocumentRoot /var/www/html/public
 
-    <Directory /var/www/carreras_umg/public>
+    <Directory /var/www/html/public>
         AllowOverride All
         Require all granted
     </Directory>
 
-    ErrorLog ${APACHE_LOG_DIR}/carreras_umg-error.log
-    CustomLog ${APACHE_LOG_DIR}/carreras_umg-access.log combined
+    ErrorLog ${APACHE_LOG_DIR}/carreras-umg-error.log
+    CustomLog ${APACHE_LOG_DIR}/carreras-umg-access.log combined
 </VirtualHost>
 ```
 
-Active el sitio y recargue Apache:
+> **Use guion, no guion bajo, en el `ServerName`.** Los nombres de host (a diferencia del nombre de la base de datos) no aceptan `_` según el estándar de DNS; Apache, el navegador o `key:generate` al validar `app.baseURL` pueden fallar o comportarse mal con `carreras_umg.local`. `carreras-umg` sí es válido.
+
+Recargue Apache:
 
 ```bash
-sudo a2dissite 000-default.conf
-sudo a2ensite carreras_umg.conf
 sudo systemctl reload apache2
 ```
 
-> Para probar en el mismo equipo, agregue `127.0.0.1 carreras_umg.local` a `/etc/hosts`. En una red local, use la IP o el nombre del servidor.
+> Para probar en el mismo equipo, agregue `127.0.0.1 carreras-umg.local` a `/etc/hosts`. En una red local, use la IP o el nombre del servidor.
 
 ### 3.4 Permisos
 
 PHP-Apache debe poder escribir en `writable/` (caché, sesiones, logs y PDF subidos):
 
 ```bash
-sudo chown -R www-data:www-data /var/www/carreras_umg/writable
-sudo chmod -R 775 /var/www/carreras_umg/writable
+sudo chown -R www-data:www-data /var/www/html/writable
+sudo chmod -R 775 /var/www/html/writable
 ```
 
 ### 3.5 Configurar `.env`
 
-Edite `/var/www/carreras_umg/.env`:
+Edite `/var/www/html/.env`:
 
 ```ini
 CI_ENVIRONMENT = production
 
-app.baseURL = 'http://carreras_umg.local/'
+app.baseURL = 'http://carreras-umg.local/'
 
 database.default.hostname = localhost
 database.default.database = carreras_umg
@@ -180,10 +184,12 @@ database.default.DBDriver = MySQLi
 database.default.port = 3306
 ```
 
+> El nombre de la base de datos sí puede llevar guion bajo (`carreras_umg`); solo el `app.baseURL`/`ServerName` debe usar guion.
+
 Genere la clave de cifrado:
 
 ```bash
-cd /var/www/carreras_umg
+cd /var/www/html
 sudo -u www-data php spark key:generate
 ```
 
@@ -208,7 +214,7 @@ Use la misma contraseña que puso en `.env`.
 ### 3.7 Migrar y crear el administrador
 
 ```bash
-cd /var/www/carreras_umg
+cd /var/www/html
 sudo -u www-data php spark migrate
 sudo -u www-data php spark db:seed AdminInicialSeeder
 ```
@@ -228,7 +234,7 @@ Luego reinicie Apache: `sudo systemctl restart apache2`.
 
 ### 3.9 Abrir la aplicación
 
-Entre a **http://carreras_umg.local/** (o la dirección del servidor) con el usuario `admin`.
+Entre a **http://carreras-umg.local/** (o la dirección del servidor) con el usuario `admin`.
 
 ---
 
