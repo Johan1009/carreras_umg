@@ -32,6 +32,7 @@
     // Visor: cambiar entre los tres PDF de la carrera.
     var visor = document.getElementById('visor');
     var marco = document.getElementById('visor-marco');
+    var enlaceAbrir = document.getElementById('btn-abrir-pestana');
     var pestanas = document.querySelectorAll('[data-src]');
     pestanas.forEach(function (boton) {
         boton.addEventListener('click', function () {
@@ -42,6 +43,9 @@
                 otro.setAttribute('aria-selected', otro === boton ? 'true' : 'false');
             });
             marco.src = boton.getAttribute('data-src');
+            if (enlaceAbrir) {
+                enlaceAbrir.href = boton.getAttribute('data-href');
+            }
         });
     });
 

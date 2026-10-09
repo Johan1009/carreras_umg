@@ -31,6 +31,7 @@
             <button type="button" role="tab"
                     aria-selected="<?= $tipo === $primero ? 'true' : 'false' ?>"
                     data-src="<?= site_url('archivo/' . $carrera['id'] . '/' . $tipo) ?>#toolbar=1&navpanes=0"
+                    data-href="<?= site_url('archivo/' . $carrera['id'] . '/' . $tipo) ?>"
                     <?= isset($archivos[$tipo]) ? '' : 'disabled' ?>>
                 <?= esc($etiqueta) ?>
             </button>
@@ -41,9 +42,16 @@
         <button class="btn btn-secundario visor-cerrar" type="button" id="btn-cerrar-visor">Cerrar pantalla completa</button>
         <iframe class="visor-marco" id="visor-marco" title="Documento PDF"
                 src="<?= site_url('archivo/' . $carrera['id'] . '/' . $primero) ?>#toolbar=1&navpanes=0"></iframe>
+        <p class="suave pequeno" style="margin-top:12px">
+            ¿No ve el documento aquí? En celular o tableta el visor integrado a veces no carga el PDF; use "Abrir en pestaña nueva".
+        </p>
         <div class="visor-pie">
             <span class="suave pequeno">Documento: <?= esc($archivos[$primero]['nombre_original']) ?></span>
-            <button class="btn btn-secundario" type="button" id="btn-ampliar">Ampliar a pantalla completa</button>
+            <div style="display:flex; gap:12px; flex-wrap:wrap">
+                <a class="btn btn-secundario" id="btn-abrir-pestana" target="_blank" rel="noopener"
+                   href="<?= site_url('archivo/' . $carrera['id'] . '/' . $primero) ?>">Abrir en pestaña nueva</a>
+                <button class="btn btn-secundario" type="button" id="btn-ampliar">Ampliar a pantalla completa</button>
+            </div>
         </div>
     </section>
 <?php endif; ?>
