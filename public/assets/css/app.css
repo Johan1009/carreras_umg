@@ -6,12 +6,15 @@
     --tarjeta: #ffffff;
     --texto: #1c1c1e;
     --texto-suave: #6e6e73;
-    --azul: #007aff;
-    --azul-suave: rgba(0, 122, 255, 0.12);
+    /* Azul y rojo institucionales de la UMG (tomados del escudo). */
+    --azul: #1c72a5;
+    --azul-suave: rgba(28, 114, 165, 0.12);
     --verde: #248a3d;
     --verde-suave: rgba(52, 199, 89, 0.16);
-    --rojo: #d70015;
-    --rojo-suave: rgba(255, 59, 48, 0.12);
+    --rojo: #cb3332;
+    --rojo-suave: rgba(203, 51, 50, 0.12);
+    --dorado: #b0863a;
+    --dorado-suave: rgba(176, 134, 58, 0.16);
     --separador: rgba(60, 60, 67, 0.18);
     --sombra: 0 1px 2px rgba(0, 0, 0, 0.06), 0 4px 16px rgba(0, 0, 0, 0.05);
     --radio: 20px;
@@ -25,12 +28,14 @@
         --tarjeta: #1c1c1e;
         --texto: #f2f2f7;
         --texto-suave: #98989d;
-        --azul: #0a84ff;
-        --azul-suave: rgba(10, 132, 255, 0.2);
+        --azul: #4098c9;
+        --azul-suave: rgba(64, 152, 201, 0.2);
         --verde: #32d74b;
         --verde-suave: rgba(50, 215, 75, 0.18);
-        --rojo: #ff453a;
-        --rojo-suave: rgba(255, 69, 58, 0.18);
+        --rojo: #e2504f;
+        --rojo-suave: rgba(226, 80, 79, 0.18);
+        --dorado: #cda554;
+        --dorado-suave: rgba(205, 165, 84, 0.2);
         --separador: rgba(84, 84, 88, 0.6);
         --sombra: none;
     }
@@ -46,12 +51,14 @@
     --tarjeta: #1c1c1e;
     --texto: #f2f2f7;
     --texto-suave: #98989d;
-    --azul: #0a84ff;
-    --azul-suave: rgba(10, 132, 255, 0.2);
+    --azul: #4098c9;
+    --azul-suave: rgba(64, 152, 201, 0.2);
     --verde: #32d74b;
     --verde-suave: rgba(50, 215, 75, 0.18);
-    --rojo: #ff453a;
-    --rojo-suave: rgba(255, 69, 58, 0.18);
+    --rojo: #e2504f;
+    --rojo-suave: rgba(226, 80, 79, 0.18);
+    --dorado: #cda554;
+    --dorado-suave: rgba(205, 165, 84, 0.2);
     --separador: rgba(84, 84, 88, 0.6);
     --sombra: none;
 }
@@ -81,6 +88,13 @@ p { margin: 0 0 12px; }
 .suave { color: var(--texto-suave); }
 .pequeno { font-size: 15px; }
 
+/* ---------- Cinta institucional ---------- */
+/* Franja con los tres colores del escudo de la UMG, visible en cualquier tema. */
+.cinta-umg {
+    height: 4px;
+    background: linear-gradient(90deg, var(--rojo) 0%, var(--rojo) 33%, var(--dorado) 33%, var(--dorado) 66%, var(--azul) 66%, var(--azul) 100%);
+}
+
 /* ---------- Barra superior ---------- */
 .barra {
     position: sticky;
@@ -97,7 +111,8 @@ p { margin: 0 0 12px; }
     -webkit-backdrop-filter: saturate(180%) blur(20px);
     border-bottom: 0.5px solid var(--separador);
 }
-.barra-marca { font-weight: 700; font-size: 20px; color: var(--texto); }
+.barra-marca { display: inline-flex; align-items: center; gap: 10px; font-weight: 700; font-size: 20px; color: var(--texto); }
+.barra-logo { height: 36px; width: 36px; display: block; }
 .barra-acciones { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .barra-usuario { font-size: 15px; color: var(--texto-suave); margin-right: 4px; }
 
@@ -449,18 +464,11 @@ p { margin: 0 0 12px; }
 }
 .acceso-caja { width: 100%; max-width: 420px; }
 .acceso-icono {
-    width: 104px;
-    height: 104px;
+    display: block;
+    width: 112px;
+    height: 112px;
     margin: 0 auto 20px;
-    border-radius: 26px;
-    background: linear-gradient(145deg, #5ac8fa, #007aff);
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 48px;
-    font-weight: 700;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.18));
 }
 .acceso h1 { text-align: center; }
 .acceso .suave { text-align: center; margin-bottom: 28px; }

@@ -13,13 +13,18 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="robots" content="noindex, nofollow">
     <title><?= esc($this->renderSection('titulo')) ?> · Carreras UMG</title>
+    <link rel="icon" type="image/png" href="<?= base_url('assets/img/logo-umg.png') ?>">
     <link rel="stylesheet" href="<?= base_url('assets/css/app.css') ?>?v=<?= @filemtime(FCPATH . 'assets/css/app.css') ?>">
 </head>
 <body>
+<div class="cinta-umg" aria-hidden="true"></div>
 <?php $esAdmin = session()->get('rol') === 'admin'; ?>
 
 <header class="barra">
-    <a class="barra-marca" href="<?= site_url('consulta') ?>">Carreras UMG</a>
+    <a class="barra-marca" href="<?= site_url('consulta') ?>">
+        <img class="barra-logo" src="<?= base_url('assets/img/logo-umg.png') ?>" alt="" width="36" height="36">
+        Carreras UMG
+    </a>
     <nav class="barra-acciones" aria-label="Navegación principal">
         <span class="barra-usuario"><?= esc(session()->get('nombre') ?? '') ?></span>
         <a class="btn btn-pequeno btn-secundario" href="<?= site_url('consulta') ?>">Consulta</a>

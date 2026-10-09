@@ -12,13 +12,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="robots" content="noindex, nofollow">
     <title>Acceso · Carreras UMG</title>
+    <link rel="icon" type="image/png" href="<?= base_url('assets/img/logo-umg.png') ?>">
     <link rel="stylesheet" href="<?= base_url('assets/css/app.css') ?>?v=<?= @filemtime(FCPATH . 'assets/css/app.css') ?>">
 </head>
 <body>
+<div class="cinta-umg" aria-hidden="true"></div>
 <button class="tema-boton tema-flotante" type="button" data-tema aria-label="Cambiar tema"></button>
 <div class="acceso">
     <div class="acceso-caja">
-        <div class="acceso-icono" aria-hidden="true">C</div>
+        <img class="acceso-icono" src="<?= base_url('assets/img/logo-umg.png') ?>" alt="Universidad Mariano Gálvez" width="112" height="112">
         <h1>Carreras UMG</h1>
         <p class="suave">Ingrese con su usuario y contraseña</p>
 
