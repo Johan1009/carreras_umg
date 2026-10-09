@@ -74,9 +74,20 @@ class Consulta extends BaseController
                     'valid_email' => 'El correo electrónico no es válido.',
                 ],
             ],
+            // No se exige formato: el texto se escapa al mostrarlo (ver Views/correo/informacion.php)
+            // y nunca se usa en consultas a la base de datos. Solo se limita el tamaño.
+            'mensaje' => [
+                'label' => 'Mensaje adicional',
+                'rules' => 'permit_empty|max_length[1000]',
+                'errors' => [
+                    'max_length' => 'El mensaje adicional no puede superar los 1000 caracteres.',
+                ],
+            ],
         ];
         if (! $this->validate($reglas)) {
-            return redirect()->to($volver)->withInput()->with('error', $this->validator->getError('correo'));
+            $error = $this->validator->getError('correo') ?: $this->validator->getError('mensaje');
+
+            return redirect()->to($volver)->withInput()->with('error', $error);
         }
 
         $seleccion = array_values(array_intersect(
