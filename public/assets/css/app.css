@@ -2,7 +2,7 @@
 
 :root {
     color-scheme: light;
-    --fondo: #f2f2f7;
+    --fondo: #e9f3fb;
     --tarjeta: #ffffff;
     --texto: #1c1c1e;
     --texto-suave: #6e6e73;
@@ -27,7 +27,7 @@
 @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
         color-scheme: dark;
-        --fondo: #000000;
+        --fondo: #081c30;
         --tarjeta: #1c1c1e;
         --texto: #f2f2f7;
         --texto-suave: #98989d;
@@ -51,7 +51,7 @@
 
 :root[data-theme="dark"] {
     color-scheme: dark;
-    --fondo: #000000;
+    --fondo: #081c30;
     --tarjeta: #1c1c1e;
     --texto: #f2f2f7;
     --texto-suave: #98989d;
