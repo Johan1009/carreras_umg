@@ -137,6 +137,24 @@ p { margin: 0 0 12px; }
 .barra .btn-peligro { background: rgba(255, 255, 255, 0.14); color: #ffb4b0; }
 .barra .tema-boton { background: rgba(255, 255, 255, 0.14); color: #fff; }
 
+/* Botón hamburguesa: solo se muestra en pantallas angostas (ver media query abajo). */
+.btn-hamburguesa {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+    border: 0;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.14);
+    cursor: pointer;
+    touch-action: manipulation;
+}
+.btn-hamburguesa span { display: block; width: 20px; height: 2px; border-radius: 2px; background: #fff; }
+
 .contenido {
     max-width: 1100px;
     margin: 0 auto;
@@ -371,7 +389,7 @@ p { margin: 0 0 12px; }
     margin-top: 12px;
 }
 
-/* Ampliar a pantalla completa: se mantiene el mismo iframe, solo cambia el contenedor */
+/* Ampliar a pantalla completa: se mantiene el mismo canvas, solo cambia el contenedor */
 .visor.is-full {
     position: fixed;
     inset: 0;
@@ -526,10 +544,28 @@ p { margin: 0 0 12px; }
 /* ---------- Pantallas estrechas ---------- */
 @media (max-width: 600px) {
     .barra { padding: 10px 14px; }
-    .barra-usuario { display: none; }
     .contenido { padding: 18px 14px 40px; }
     h1 { font-size: 28px; }
-    .visor-marco { height: calc(100vh - 340px); min-height: 420px; }
+    .visor-lienzo-envoltorio { height: calc(100vh - 340px); min-height: 420px; }
     .reticula { grid-template-columns: repeat(2, 1fr); gap: 26px 14px; }
     .icono { width: 96px; height: 96px; }
+
+    /* Menú hamburguesa: la navegación se convierte en un panel desplegable. */
+    .btn-hamburguesa { display: flex; }
+    .barra-acciones {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+        padding: 16px;
+        background: var(--marino);
+        border-bottom: 0.5px solid rgba(255, 255, 255, 0.12);
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+    }
+    .barra-acciones.abierto { display: flex; }
+    .barra-usuario { margin: 0 0 4px; }
 }

@@ -25,7 +25,10 @@
         <img class="barra-logo" src="<?= base_url('assets/img/logo-umg.png') ?>" alt="" width="36" height="36">
         Carreras UMG
     </a>
-    <nav class="barra-acciones" aria-label="Navegación principal">
+    <button class="btn-hamburguesa" type="button" id="btn-menu" aria-expanded="false" aria-controls="menu-principal" aria-label="Abrir menú">
+        <span></span><span></span><span></span>
+    </button>
+    <nav class="barra-acciones" id="menu-principal" aria-label="Navegación principal">
         <span class="barra-usuario"><?= esc(session()->get('nombre') ?? '') ?></span>
         <a class="btn btn-pequeno btn-secundario" href="<?= site_url('consulta') ?>">Consulta</a>
         <?php if ($esAdmin): ?>

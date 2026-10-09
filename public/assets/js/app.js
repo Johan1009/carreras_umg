@@ -53,6 +53,33 @@
         btnCerrarVisor.addEventListener('click', function () { alternarAmpliado(false); });
     }
 
+    // Menú hamburguesa (barra superior en pantallas angostas).
+    var btnMenu = document.getElementById('btn-menu');
+    var menuPrincipal = document.getElementById('menu-principal');
+
+    function alternarMenu(abrir) {
+        if (!btnMenu || !menuPrincipal) {
+            return;
+        }
+        menuPrincipal.classList.toggle('abierto', abrir);
+        btnMenu.setAttribute('aria-expanded', abrir ? 'true' : 'false');
+    }
+
+    if (btnMenu && menuPrincipal) {
+        btnMenu.addEventListener('click', function () {
+            alternarMenu(!menuPrincipal.classList.contains('abierto'));
+        });
+        // Cierra el menú al tocar fuera de él.
+        document.addEventListener('click', function (evento) {
+            if (!menuPrincipal.classList.contains('abierto')) {
+                return;
+            }
+            if (!menuPrincipal.contains(evento.target) && evento.target !== btnMenu && !btnMenu.contains(evento.target)) {
+                alternarMenu(false);
+            }
+        });
+    }
+
     // Hoja inferior para enviar por correo.
     var hoja = document.getElementById('hoja-correo');
     function abrirHoja() {
@@ -88,6 +115,7 @@
         if (evento.key === 'Escape') {
             alternarAmpliado(false);
             cerrarHoja();
+            alternarMenu(false);
         }
     });
 
