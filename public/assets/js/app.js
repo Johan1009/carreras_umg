@@ -111,7 +111,10 @@
         });
     });
 
-    // Cambio de tema claro / oscuro. La elección se guarda en el navegador de cada persona.
+    // Cambio de tema claro / oscuro. La elección se guarda en una cookie (no localStorage)
+    // para que funcione igual en todas las páginas y no dependa del almacenamiento local,
+    // que algunos navegadores bloquean. El servidor ya aplica esta misma cookie al renderizar
+    // <html data-theme="...">, así que aquí solo hace falta mantenerla sincronizada.
     var raiz = document.documentElement;
 
     function temaActual() {
@@ -136,8 +139,9 @@
             var nuevo = temaActual() === 'dark' ? 'light' : 'dark';
             raiz.setAttribute('data-theme', nuevo);
             try {
-                localStorage.setItem('tema', nuevo === 'dark' ? 'oscuro' : 'claro');
-            } catch (e) { /* sin almacenamiento: el cambio dura solo esta página */ }
+                var valor = nuevo === 'dark' ? 'oscuro' : 'claro';
+                document.cookie = 'tema=' + valor + '; path=/; max-age=31536000; samesite=lax';
+            } catch (e) { /* el cambio dura solo esta página */ }
             actualizarBotonesTema();
         });
     });
