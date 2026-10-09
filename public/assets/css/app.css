@@ -186,6 +186,21 @@ p { margin: 0 0 12px; }
 .btn-pequeno { min-height: 44px; padding: 0 16px; font-size: 16px; border-radius: 12px; }
 .btn-bloque { width: 100%; }
 
+/* Botón en espera (al enviar un formulario): evita el doble envío y muestra que algo está pasando. */
+.btn:disabled { cursor: wait; opacity: 0.85; }
+.btn .spinner {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    border: 2.5px solid currentColor;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: girar 0.7s linear infinite;
+}
+@keyframes girar {
+    to { transform: rotate(360deg); }
+}
+
 /* ---------- Avisos ---------- */
 .aviso {
     padding: 14px 18px;

@@ -62,7 +62,7 @@
 
 <?php $hojaAbierta = old('correo') !== null; // si el envío falló, se reabre con los datos escritos ?>
 <div class="hoja-fondo" id="hoja-correo" <?= $hojaAbierta ? '' : 'hidden' ?> role="dialog" aria-modal="true" aria-labelledby="titulo-hoja">
-    <form class="hoja" method="post" action="<?= site_url('consulta/carrera/' . $carrera['id'] . '/enviar') ?>">
+    <form class="hoja" method="post" action="<?= site_url('consulta/carrera/' . $carrera['id'] . '/enviar') ?>" data-cargando="Enviando…">
         <?= csrf_field() ?>
         <div class="hoja-agarre" aria-hidden="true"></div>
         <h2 id="titulo-hoja">Enviar información por correo</h2>

@@ -128,6 +128,29 @@
         });
     });
 
+    // Evita el doble envío: al confirmarse el envío de un formulario (no cuando lo cancela
+    // la confirmación de arriba), deshabilita su botón y muestra una animación de carga.
+    // Útil sobre todo en el envío de correo, que puede tardar varios segundos.
+    document.querySelectorAll('form').forEach(function (formulario) {
+        formulario.addEventListener('submit', function (evento) {
+            if (evento.defaultPrevented) {
+                return;
+            }
+            var boton = formulario.querySelector('button[type="submit"]');
+            if (!boton || boton.disabled) {
+                return;
+            }
+            boton.disabled = true;
+            boton.setAttribute('aria-busy', 'true');
+            boton.textContent = '';
+            var spinner = document.createElement('span');
+            spinner.className = 'spinner';
+            spinner.setAttribute('aria-hidden', 'true');
+            boton.appendChild(spinner);
+            boton.appendChild(document.createTextNode(formulario.getAttribute('data-cargando') || 'Procesando…'));
+        });
+    });
+
     // Cambio de tema claro / oscuro. La elección se guarda en una cookie (no localStorage)
     // para que funcione igual en todas las páginas y no dependa del almacenamiento local,
     // que algunos navegadores bloquean. El servidor ya aplica esta misma cookie al renderizar
