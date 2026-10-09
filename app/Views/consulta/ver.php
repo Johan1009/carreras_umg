@@ -43,7 +43,7 @@
         <iframe class="visor-marco" id="visor-marco" title="Documento PDF"
                 src="<?= site_url('archivo/' . $carrera['id'] . '/' . $primero) ?>#toolbar=1&navpanes=0"></iframe>
         <p class="suave pequeno" style="margin-top:12px">
-            ¿No ve el documento aquí? En celular o tableta el visor integrado a veces no carga el PDF; use "Abrir en pestaña nueva".
+            Si no visualiza el archivo, posiblemente su navegador no soporte la visualización de PDFs . Intente "Abrir en pestaña nueva".
         </p>
         <div class="visor-pie">
             <span class="suave pequeno">Documento: <?= esc($archivos[$primero]['nombre_original']) ?></span>
