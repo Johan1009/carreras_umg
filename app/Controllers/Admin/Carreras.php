@@ -34,7 +34,16 @@ class Carreras extends BaseController
     {
         $carreras = model(CarreraModel::class);
 
-        $reglas = $this->reglasNombre(null) + $this->reglasArchivos(array_keys(CarreraArchivoModel::TIPOS));
+        // Los tres documentos son opcionales: solo se validan y guardan los que el usuario adjuntó.
+        $tiposNuevos = [];
+        foreach (array_keys(CarreraArchivoModel::TIPOS) as $tipo) {
+            $archivo = $this->request->getFile($tipo);
+            if ($archivo instanceof UploadedFile && $archivo->getError() !== UPLOAD_ERR_NO_FILE) {
+                $tiposNuevos[] = $tipo;
+            }
+        }
+
+        $reglas = $this->reglasNombre(null) + $this->reglasArchivos($tiposNuevos);
         if (! $this->validate($reglas)) {
             return redirect()->back()->withInput()->with('errores', $this->validator->getErrors());
         }
@@ -46,7 +55,7 @@ class Carreras extends BaseController
 
         $guardados = [];
         try {
-            foreach (array_keys(CarreraArchivoModel::TIPOS) as $tipo) {
+            foreach ($tiposNuevos as $tipo) {
                 $archivo = $this->request->getFile($tipo);
                 $datos   = ArchivosCarrera::guardar($carreraId, $tipo, $archivo);
                 $guardados[] = $datos['ruta'];
@@ -66,7 +75,7 @@ class Carreras extends BaseController
             return redirect()->back()->withInput()->with('error', 'No se pudo guardar la carrera. Intente de nuevo.');
         }
 
-        return redirect()->to('/admin/carreras')->with('ok', 'Carrera registrada con sus tres documentos.');
+        return redirect()->to('/admin/carreras')->with('ok', 'Carrera registrada.');
     }
 
     public function editar(int $id)
@@ -158,6 +167,30 @@ class Carreras extends BaseController
         }
 
         return redirect()->to('/admin/carreras')->with('error', 'No se pudo eliminar la carrera.');
+    }
+
+    /**
+     * Elimina un solo documento de la carrera (no afecta a los otros dos ni a la carrera).
+     */
+    public function eliminarArchivo(int $carreraId, string $tipo)
+    {
+        $this->carreraOFallar($carreraId);
+
+        if (! array_key_exists($tipo, CarreraArchivoModel::TIPOS)) {
+            throw PageNotFoundException::forPageNotFound();
+        }
+
+        $archivosModel = model(CarreraArchivoModel::class);
+        $archivo = $archivosModel->where(['carrera_id' => $carreraId, 'tipo' => $tipo])->first();
+
+        if ($archivo === null) {
+            return redirect()->to('/admin/carreras/' . $carreraId . '/editar')->with('error', 'Ese documento ya no existe.');
+        }
+
+        $archivosModel->delete($archivo['id']);
+        ArchivosCarrera::eliminar($archivo['ruta']);
+
+        return redirect()->to('/admin/carreras/' . $carreraId . '/editar')->with('ok', 'Documento eliminado.');
     }
 
     private function reglasNombre(?int $id): array

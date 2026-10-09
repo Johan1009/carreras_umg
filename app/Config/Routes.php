@@ -30,6 +30,7 @@ $routes->group('admin', ['filter' => 'admin'], static function ($routes) {
     $routes->get('carreras/(:num)/editar', 'Admin\Carreras::editar/$1');
     $routes->post('carreras/(:num)', 'Admin\Carreras::actualizar/$1');
     $routes->post('carreras/(:num)/eliminar', 'Admin\Carreras::eliminar/$1');
+    $routes->post('carreras/(:num)/archivo/(:segment)/eliminar', 'Admin\Carreras::eliminarArchivo/$1/$2');
 
     $routes->get('usuarios', 'Admin\Usuarios::index');
     $routes->get('usuarios/nuevo', 'Admin\Usuarios::nuevo');
