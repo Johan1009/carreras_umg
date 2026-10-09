@@ -84,7 +84,9 @@ php_errors.log
 #-------------------------
 # Composer
 #-------------------------
-vendor/
+# Con barra inicial: solo ignora el vendor/ de Composer en la raíz, no
+# public/assets/vendor/ (ahí vive PDF.js, vendorizado a propósito).
+/vendor/
 
 #-------------------------
 # IDE / Development Files

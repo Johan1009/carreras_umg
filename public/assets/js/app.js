@@ -29,27 +29,10 @@
         });
     }
 
-    // Visor: cambiar entre los tres PDF de la carrera.
+    // Visor de PDF: el cambio de documento y el dibujado de páginas lo maneja
+    // visor-pdf.js (PDF.js embebido). Aquí solo queda la mecánica genérica de
+    // "pantalla completa", que es UI, no específica del visor.
     var visor = document.getElementById('visor');
-    var marco = document.getElementById('visor-marco');
-    var enlaceAbrir = document.getElementById('btn-abrir-pestana');
-    var pestanas = document.querySelectorAll('[data-src]');
-    pestanas.forEach(function (boton) {
-        boton.addEventListener('click', function () {
-            if (!marco) {
-                return;
-            }
-            pestanas.forEach(function (otro) {
-                otro.setAttribute('aria-selected', otro === boton ? 'true' : 'false');
-            });
-            marco.src = boton.getAttribute('data-src');
-            if (enlaceAbrir) {
-                enlaceAbrir.href = boton.getAttribute('data-href');
-            }
-        });
-    });
-
-    // Ampliar el PDF a pantalla completa (funciona también en Safari de iPad).
     var btnAmpliar = document.getElementById('btn-ampliar');
     var btnCerrarVisor = document.getElementById('btn-cerrar-visor');
 
@@ -59,6 +42,8 @@
         }
         visor.classList.toggle('is-full', activar);
         document.body.style.overflow = activar ? 'hidden' : '';
+        // Avisa a visor-pdf.js para que vuelva a dibujar la página al nuevo tamaño.
+        visor.dispatchEvent(new CustomEvent('visor:redimensionado'));
     }
 
     if (btnAmpliar) {

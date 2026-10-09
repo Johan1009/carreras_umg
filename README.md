@@ -274,7 +274,7 @@ Entre a **http://carreras-umg.local/** (o la IP/dominio real del servidor, sin n
 | Error 500 al subir un PDF en Ubuntu | Permisos de `writable/` | Repita `chown` y `chmod` del paso 3.4. |
 | Un PDF grande no se sube | `upload_max_filesize` o `post_max_size` bajos | Ajuste `php.ini` (paso 3.8). |
 | *"No se pudo enviar el correo"* | Credenciales SMTP incorrectas o puerto bloqueado | Use una contraseña de aplicación, revise puerto y cifrado y pruebe el envío desde **Correo**. El detalle queda en `writable/logs/`. |
-| El visor integrado no muestra el PDF en celular o tableta (sí funciona en PC) | Chrome para Android y, en algunos casos, Safari de iOS no renderizan PDF dentro de un `<iframe>` | Use el botón **"Abrir en pestaña nueva"** bajo el visor: abre el PDF con el visor nativo del navegador, que sí funciona en móvil. |
+| El visor no muestra el PDF (página en blanco) | El navegador bloqueó JavaScript, o un bloqueador de contenido impide cargar `assets/vendor/pdfjs/` | Revise que JavaScript esté habilitado. Como respaldo, use el botón **"Abrir en pestaña nueva"** bajo el visor. |
 | Olvidó la contraseña del administrador | No hay recuperación por correo | Genere un hash y actualícelo en la base de datos (ver abajo). |
 
 Para restablecer la contraseña de un usuario desde la línea de comandos:
@@ -309,7 +309,10 @@ app/
 └── Views/               Plantillas de login, consulta, administración y correo
 public/
 ├── index.php            Punto de entrada web (única carpeta expuesta)
-└── assets/              CSS e interacciones (sin dependencias externas)
+└── assets/
+    ├── css/ y js/        Estilos e interacciones propias, sin dependencias externas
+    ├── img/              Logo institucional
+    └── vendor/pdfjs/     PDF.js (Mozilla), vendorizado localmente para el visor de PDF
 writable/
 ├── uploads/carreras/    PDF subidos (no accesibles directamente desde la web)
 └── logs/                Registros de errores

@@ -30,8 +30,7 @@
         <?php foreach ($tipos as $tipo => $etiqueta): ?>
             <button type="button" role="tab"
                     aria-selected="<?= $tipo === $primero ? 'true' : 'false' ?>"
-                    data-src="<?= site_url('archivo/' . $carrera['id'] . '/' . $tipo) ?>#toolbar=1&navpanes=0"
-                    data-href="<?= site_url('archivo/' . $carrera['id'] . '/' . $tipo) ?>"
+                    data-pdf-src="<?= site_url('archivo/' . $carrera['id'] . '/' . $tipo) ?>"
                     <?= isset($archivos[$tipo]) ? '' : 'disabled' ?>>
                 <?= esc($etiqueta) ?>
             </button>
@@ -40,11 +39,15 @@
 
     <section class="visor" id="visor" aria-label="Visor de documento">
         <button class="btn btn-secundario visor-cerrar" type="button" id="btn-cerrar-visor">Cerrar pantalla completa</button>
-        <iframe class="visor-marco" id="visor-marco" title="Documento PDF"
-                src="<?= site_url('archivo/' . $carrera['id'] . '/' . $primero) ?>#toolbar=1&navpanes=0"></iframe>
-        <p class="suave pequeno" style="margin-top:12px">
-            Si no visualiza el archivo, posiblemente su navegador no soporte la visualización de PDFs . Intente "Abrir en pestaña nueva".
-        </p>
+        <div class="visor-lienzo-envoltorio" id="visor-lienzo-envoltorio">
+            <p class="suave pequeno" id="visor-estado">Cargando documento…</p>
+            <canvas id="visor-lienzo"></canvas>
+        </div>
+        <div class="visor-paginacion" id="visor-paginacion" hidden>
+            <button class="btn btn-secundario btn-pequeno" type="button" id="btn-pagina-anterior">&larr; Anterior</button>
+            <span class="suave pequeno" id="visor-indicador-pagina"></span>
+            <button class="btn btn-secundario btn-pequeno" type="button" id="btn-pagina-siguiente">Siguiente &rarr;</button>
+        </div>
         <div class="visor-pie">
             <span class="suave pequeno">Documento: <?= esc($archivos[$primero]['nombre_original']) ?></span>
             <div style="display:flex; gap:12px; flex-wrap:wrap">
@@ -54,6 +57,7 @@
             </div>
         </div>
     </section>
+    <script type="module" src="<?= base_url('assets/js/visor-pdf.js') ?>?v=<?= @filemtime(FCPATH . 'assets/js/visor-pdf.js') ?>"></script>
 <?php endif; ?>
 
 <?php $hojaAbierta = old('correo') !== null; // si el envío falló, se reabre con los datos escritos ?>
