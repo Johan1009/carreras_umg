@@ -17,6 +17,7 @@
     --dorado-suave: rgba(176, 134, 58, 0.16);
     /* Azul marino institucional (barra superior), igual en claro y oscuro. */
     --marino: #0a3b68;
+    --marca-agua: 0.05;
     --separador: rgba(60, 60, 67, 0.18);
     --sombra: 0 1px 2px rgba(0, 0, 0, 0.06), 0 4px 16px rgba(0, 0, 0, 0.05);
     --radio: 20px;
@@ -38,6 +39,7 @@
         --rojo-suave: rgba(226, 80, 79, 0.18);
         --dorado: #cda554;
         --dorado-suave: rgba(205, 165, 84, 0.2);
+        --marca-agua: 0.08;
         --separador: rgba(84, 84, 88, 0.6);
         --sombra: none;
     }
@@ -61,6 +63,7 @@
     --rojo-suave: rgba(226, 80, 79, 0.18);
     --dorado: #cda554;
     --dorado-suave: rgba(205, 165, 84, 0.2);
+    --marca-agua: 0.08;
     --separador: rgba(84, 84, 88, 0.6);
     --sombra: none;
 }
@@ -78,6 +81,20 @@ html, body {
     line-height: 1.35;
     -webkit-font-smoothing: antialiased;
     -webkit-tap-highlight-color: transparent;
+}
+
+/* Escudo como marca de agua del fondo: fijo, detrás de todo el contenido, muy tenue para no competir con el texto. */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background-image: url("../img/logo-umg.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: min(62vmin, 520px);
+    opacity: var(--marca-agua);
+    pointer-events: none;
 }
 
 body { min-height: 100vh; }
