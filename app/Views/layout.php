@@ -1,29 +1,25 @@
+<?php
+    // El tema se guarda en una cookie (no localStorage) para que el servidor pueda
+    // aplicarlo desde el primer render de cada página, sin depender de JavaScript
+    // ni de que el navegador permita almacenamiento local.
+    $tema = $_COOKIE['tema'] ?? null;
+    $temaAtributo = $tema === 'oscuro' ? ' data-theme="dark"' : ($tema === 'claro' ? ' data-theme="light"' : '');
+?>
 <!doctype html>
-<html lang="es">
+<html lang="es"<?= $temaAtributo ?>>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="robots" content="noindex, nofollow">
-    <title><?= esc($this->renderSection('titulo')) ?> · carreras_umg</title>
+    <title><?= esc($this->renderSection('titulo')) ?> · Carreras UMG</title>
     <link rel="stylesheet" href="<?= base_url('assets/css/app.css') ?>?v=<?= @filemtime(FCPATH . 'assets/css/app.css') ?>">
-    <script>
-        // Aplica el tema guardado antes de pintar la página para evitar un parpadeo.
-        (function () {
-            try {
-                var tema = localStorage.getItem('tema');
-                if (tema === 'claro' || tema === 'oscuro') {
-                    document.documentElement.setAttribute('data-theme', tema === 'oscuro' ? 'dark' : 'light');
-                }
-            } catch (e) { /* almacenamiento bloqueado: se usa el tema del sistema */ }
-        })();
-    </script>
 </head>
 <body>
 <?php $esAdmin = session()->get('rol') === 'admin'; ?>
 
 <header class="barra">
-    <a class="barra-marca" href="<?= site_url('consulta') ?>">carreras_umg</a>
+    <a class="barra-marca" href="<?= site_url('consulta') ?>">Carreras UMG</a>
     <nav class="barra-acciones" aria-label="Navegación principal">
         <span class="barra-usuario"><?= esc(session()->get('nombre') ?? '') ?></span>
         <a class="btn btn-pequeno btn-secundario" href="<?= site_url('consulta') ?>">Consulta</a>

@@ -3,7 +3,7 @@
 <?= $this->section('titulo') ?>Consulta de carreras<?= $this->endSection() ?>
 
 <?= $this->section('contenido') ?>
-<h1>carreras_umg</h1>
+<h1>Carreras UMG</h1>
 <p class="suave" style="margin-bottom:24px">Toque una carrera para ver su información.</p>
 
 <?php if (empty($carreras)): ?>

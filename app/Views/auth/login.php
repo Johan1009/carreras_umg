@@ -1,29 +1,25 @@
+<?php
+    // El tema se guarda en una cookie (no localStorage) para que el servidor pueda
+    // aplicarlo desde el primer render de cada página, sin depender de JavaScript
+    // ni de que el navegador permita almacenamiento local.
+    $tema = $_COOKIE['tema'] ?? null;
+    $temaAtributo = $tema === 'oscuro' ? ' data-theme="dark"' : ($tema === 'claro' ? ' data-theme="light"' : '');
+?>
 <!doctype html>
-<html lang="es">
+<html lang="es"<?= $temaAtributo ?>>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="robots" content="noindex, nofollow">
-    <title>Acceso · carreras_umg</title>
+    <title>Acceso · Carreras UMG</title>
     <link rel="stylesheet" href="<?= base_url('assets/css/app.css') ?>?v=<?= @filemtime(FCPATH . 'assets/css/app.css') ?>">
-    <script>
-        // Aplica el tema guardado antes de pintar la página para evitar un parpadeo.
-        (function () {
-            try {
-                var tema = localStorage.getItem('tema');
-                if (tema === 'claro' || tema === 'oscuro') {
-                    document.documentElement.setAttribute('data-theme', tema === 'oscuro' ? 'dark' : 'light');
-                }
-            } catch (e) { /* almacenamiento bloqueado: se usa el tema del sistema */ }
-        })();
-    </script>
 </head>
 <body>
 <button class="tema-boton tema-flotante" type="button" data-tema aria-label="Cambiar tema"></button>
 <div class="acceso">
     <div class="acceso-caja">
         <div class="acceso-icono" aria-hidden="true">C</div>
-        <h1>carreras_umg</h1>
+        <h1>Carreras UMG</h1>
         <p class="suave">Ingrese con su usuario y contraseña</p>
 
         <?php if ($ok = session()->getFlashdata('ok')): ?>
